@@ -9,6 +9,13 @@
 #SBATCH -e process_1.1.err
 
 
+#
+# This script requires the name of the raw fastq file directory as an argument,
+# e.g, "sbatch process_1.1.sh MiSeq_12_microsatellite"
+#
+
+
+
 #################################################################
 #								#
 #  This pipeline performs processing for caribou amplicon data	#

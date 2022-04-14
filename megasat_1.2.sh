@@ -9,6 +9,12 @@
 #SBATCH -e megasat_1.2.err
 
 
+#
+# This script requires the name of the fastq file directory as an input argument,
+# e.g, "sbatch megasat_1.2.sh MiSeq_12_microsatellite"
+#
+
+
 module load perl
 
 
