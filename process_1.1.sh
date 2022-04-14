@@ -9,6 +9,35 @@
 #SBATCH -e process_1.1.err
 
 
+#################################################################
+#								#
+#  This pipeline performs processing for caribou amplicon data	#
+#  for use by MEGASAT and other software.			#
+#								#
+#								#
+#	~Software Tools~	~Functions~			#
+#								#
+#	Trimmomatic		Remove adapter sequences,	#
+#				Remove low-quality sequences,	#
+#				Remove short sequences		#
+#								#
+#	Fastqc			Generate quality reports for	#
+#				trimmed sequence data		#
+#								#
+#	Bowtie2			Align trimmed sequences to	#
+#				the caribou reference genome	#
+#								#
+#	Samtools view		Converts alignment output from	#
+#				uncompressed to compressed	#
+#				format (SAM > BAM) and removes	#
+#				low-quality alignments		#
+#								#
+#	Samtools sort		Sorts sequence reads in BAM	#
+#				files, typically a required	#
+#				step for downstream analysis	#
+#								#
+#################################################################
+
 module load fastqc
 module load java
 module load trimmomatic
