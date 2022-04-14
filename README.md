@@ -16,6 +16,7 @@ The primary function of this script is to quality-trim sequence data and align i
 	<li>**bowtie2**		Align trimmed sequences to the caribou reference genome</li>
 	<li>**samtools view**	Convert alignment output from bowtie2 from uncompressed SAM to compressed BAM and remove low-quality alignments.</li>
 	<li>**samtools sort**	Sort sequence reads in the BAM file; typically required for downstream analysis.</li>
+</ol>
 
 ### megasat_1.2.sh
 
