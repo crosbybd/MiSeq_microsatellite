@@ -61,4 +61,3 @@ perl /home/bcrosby/projects/def-pawilson/software/MEGASAT-master/'MEGASAT_1.0 fo
 	4 \
 	./merged_$1/ \
 	./megasat_$1/
-
