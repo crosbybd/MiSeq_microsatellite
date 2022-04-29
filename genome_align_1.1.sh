@@ -4,7 +4,7 @@
 #SBATCH --mail-user=bcrosby@trentu.ca
 #SBATCH -c 4
 #SBATCH --mem=32G
-#SBATCH --time=0-5:0:0
+#SBATCH --time=0-2:0:0
 #SBATCH -o genome_align_1.1.log
 #SBATCH -e genome_align_1.1.err
 
@@ -25,7 +25,7 @@ module load bowtie2
 module load samtools
 
 
-rm -r alignments_$1/
+rm -fr alignments_$1/
 mkdir alignments_$1/
 mkdir alignments_$1/dropped/
 
@@ -39,12 +39,10 @@ echo "# Aligning data for run: $1 " >> genome_align_1.1.err
 echo "########################################################" >> genome_align_1.1.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz > fastq_list_R1.txt
-
-
-sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" fastq_list_R1.txt | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/::" | \
-	> sample_list.txt
+ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+        sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        > alignments_$1/sample_list.txt
 
 
 while IFS= read -r SAMPLE; do
@@ -70,7 +68,5 @@ while IFS= read -r SAMPLE; do
 	echo "# Genome alignment for ${SAMPLE} complete #"
 	echo "# Genome alignment for ${SAMPLE} complete #" >> genome_align_1.1.err
 
-done < sample_list.txt
+done < alignments_$1/sample_list.txt
 
-rm sample_list.txt
-rm fastq_list_R1.txt

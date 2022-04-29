@@ -22,18 +22,18 @@ module load bowtie2
 module load samtools
 
 
-rm -r trim_$1/
+rm -fr trim_$1/
 mkdir trim_$1/
 mkdir trim_$1/unpaired/
 
-rm -r sam_$1/
+rm -fr sam_$1/
 mkdir sam_$1/
 mkdir sam_$1/dropped/
 
-rm -r bam_$1/
+rm -fr bam_$1/
 mkdir bam_$1/
 
-rm -r fastqc_$1/
+rm -fr fastqc_$1/
 mkdir fastqc_$1/
 
 
@@ -46,12 +46,10 @@ echo "# Processing data for run: $1 " >> process_1.1.err
 echo "########################################################" >> process_1.1.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz > fastq_list_R1.txt
-
-
-sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" fastq_list_R1.txt | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/::" | \
-	> sample_list.txt
+ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+        sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        > trim_$1/sample_list.txt
 
 
 while IFS= read -r SAMPLE; do
