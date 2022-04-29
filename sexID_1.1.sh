@@ -21,10 +21,11 @@
 #
 
 
+module load bowtie2
 module load samtools
 
 
-rm -r sexID_$1/
+rm -fr sexID_$1/
 mkdir sexID_$1/
 mkdir sexID_$1/alignments/
 mkdir sexID_$1/alignments/dropped/
@@ -39,12 +40,10 @@ echo "# Generating sexID table for run: $1 " >> sexID_1.1.err
 echo "########################################################" >> sexID_1.1.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz > fastq_list_R1.txt
-
-
-sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" fastq_list_R1.txt | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/::" | \
-        > sample_list.txt
+ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+        sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        > sexID_$1/sample_list.txt
 
 
 echo "sample,X_depth,Y_depth,sex" > sexID_$1/sexID_results_$1.csv
@@ -87,6 +86,9 @@ while IFS= read -r SAMPLE; do
                 cut -f 2,3 > \
                 sexID_$1/read_lengths_temp.txt
 
+
+		total_depth=$(cut -f 2 sexID_$1/read_lengths_temp.txt | awk '{sum += $1 } END { print sum }')
+
                 X_depth=$(grep '204' sexID_$1/read_lengths_temp.txt | \
                         cut -f 2)
 
@@ -94,20 +96,24 @@ while IFS= read -r SAMPLE; do
                         cut -f 2)
 
 
-                if [[ $(( $X_depth / 10 )) -gt $Y_depth || -z "$Y_depth" ]]
+                if [[ -z "$X_depth" || $total_depth -lt 20  ]]
                 then
+
+                        echo "${SAMPLE},$X_depth,$Y_depth,-99" >> sexID_$1/sexID_results_$1.csv
+
+                elif [[ $(( $X_depth / 10 )) -gt $Y_depth || -z "$Y_depth" ]]
+                then
+
                         echo "${SAMPLE},$X_depth,$Y_depth,F" >> sexID_$1/sexID_results_$1.csv
+
                 else
+
                         echo "${SAMPLE},$X_depth,$Y_depth,M" >> sexID_$1/sexID_results_$1.csv
+
                 fi
 
-
-
-
-done < sample_list.txt
+done < sexID_$1/sample_list.txt
 
 
 rm sexID_$1/read_lengths_temp.txt
-rm sample_list.txt
-rm fastq_list_R1.txt
 rm -r sexID_$1/alignments/dropped/
