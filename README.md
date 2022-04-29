@@ -1,21 +1,25 @@
 # MiSeq_microsatellite
-Repository for maintaining scripts and tools used in processing and analysis of caribou (Rangifer tarandus) microsatellite amplicon data
+Repository for maintaining scripts and tools used in processing and analysis of caribou (Rangifer tarandus) high-throughput sequencing amplicon data
 
 
 ###  The scripts herein are used for processing and genotyping caribou microsatellite amplicon data.
 
 
-### process_1.1.sh
+### trim_1.1.sh
 
-The primary function of this script is to quality-trim sequence data and align it to the reference genome. Here are the tools used in process_1.1.sh and their functions:
+Used for quality-trimming and quality assessment. **Trimmomatic** removes adapter sequences, removes low-quality sequences, and removes truncated sequences.  **Fastqc** generates quality reports for trimmed sequence data
 
 
-1. **trimmomatic**	Remove adapter sequences, remove low-quality sequences, and remove truncated sequences
-2. **fastqc**		Generate quality reports for trimmed sequence data
-3. **bowtie2**		Align trimmed sequences to the caribou reference genome
-4. **samtools view**	Convert alignment output from bowtie2 from uncompressed SAM to compressed BAM and remove low-quality alignments.
-5. **samtools sort**	Sort sequence reads in the BAM file; typically required for downstream analysis.
+### genome_align_1.1.sh
+
+**Bowtie2** aligns trimmed sequence reads to the caribou reference genome. **Samtools** takes SAM output from Bowtie2 and converts it to a set of sorted, compressed BAM files.
+
 
 ### megasat_1.2.sh
 
 megasat_1.2.sh runs MEGASAT_Genotype.pl (Zhan *et al,* 2017, https://github.com/beiko-lab/MEGASAT), taking the output from process_1.1.sh as input and generating a file of microsatellite genotypes.
+
+
+### sexID_1.1.sh
+
+**Bowtie2** aligns trimmed sequence reads to the caribou ZFX/Y locus for sex identification. Bowtie2 SAM output is converted to BAM using **samtools*, then a custom script generates a sexID table for all samples run.
