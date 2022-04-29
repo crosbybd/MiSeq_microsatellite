@@ -117,3 +117,7 @@ done < sexID_$1/sample_list.txt
 
 rm sexID_$1/read_lengths_temp.txt
 rm -r sexID_$1/alignments/dropped/
+
+
+mv sexID_1.1.log sexID_$1/
+mv sexID_1.1.err sexID_$1/

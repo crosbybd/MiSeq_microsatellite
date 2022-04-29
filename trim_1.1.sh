@@ -73,3 +73,5 @@ while IFS= read -r SAMPLE; do
 
 done < trim_$1/sample_list.txt
 
+mv trim_1.1.log trim_$1/
+mv trim_1.1.err trim_$1/

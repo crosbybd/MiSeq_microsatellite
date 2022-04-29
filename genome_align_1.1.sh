@@ -70,3 +70,6 @@ while IFS= read -r SAMPLE; do
 
 done < alignments_$1/sample_list.txt
 
+
+mv genome_align_1.1.log alignments_$1/
+mv genome_align_1.1.err alignments_$1/
