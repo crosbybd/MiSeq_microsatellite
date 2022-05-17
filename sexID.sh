@@ -25,10 +25,10 @@ module load bowtie2
 module load samtools
 
 
-rm -fr sexID_$1/
-mkdir sexID_$1/
-mkdir sexID_$1/alignments/
-mkdir sexID_$1/alignments/dropped/
+rm -fr $1_sexID/
+mkdir $1_sexID/
+mkdir $1_sexID/alignments/
+mkdir $1_sexID/alignments/dropped/
 
 
 echo "########################################################"
@@ -43,10 +43,10 @@ echo "########################################################" >> sexID.err
 ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
         sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
-        > sexID_$1/sample_list.txt
+        > $1_sexID/sample_list.txt
 
 
-echo "sample,X_depth,Y_depth,sex" > sexID_$1/sexID_results_$1.csv
+echo "sample,X_depth,Y_depth,sex" > $1_sexID/sexID_results_$1.csv
 
 
 while IFS= read -r SAMPLE; do
@@ -58,17 +58,17 @@ while IFS= read -r SAMPLE; do
 
         bowtie2 --local \
                 -x ./references/zfy_caribou \
-                -1 ./trim_$1/${SAMPLE}_R1_trim.fastq.gz \
-                -2 ./trim_$1/${SAMPLE}_R2_trim.fastq.gz \
-                -S ./sexID_$1/alignments/${SAMPLE}_sexID.sam \
+                -1 ./$1_trim/${SAMPLE}_R1_trim.fastq.gz \
+                -2 ./$1_trim/${SAMPLE}_R2_trim.fastq.gz \
+                -S ./$1_sexID/alignments/${SAMPLE}_sexID.sam \
                 --phred33 \
-                --un-conc-gz ./sexID_$1/alignments/dropped/${SAMPLE}_sexID_dropped.sam \
+                --un-conc-gz ./$1_sexID/alignments/dropped/${SAMPLE}_sexID_dropped.sam \
                 --rg-id KBP3B.1 \
                 --threads 4
 
 
-        samtools view -bS -q 30 -@ 3 ./sexID_$1/alignments/${SAMPLE}_sexID.sam | \
-                samtools sort -@ 4 - -o ./sexID_$1/alignments/${SAMPLE}_sexID.bam
+        samtools view -bS -q 30 -@ 3 ./$1_sexID/alignments/${SAMPLE}_sexID.sam | \
+                samtools sort -@ 4 - -o ./$1_sexID/alignments/${SAMPLE}_sexID.bam
 
 
 	echo "Alignment for sample ${SAMPLE} complete"
@@ -81,43 +81,43 @@ while IFS= read -r SAMPLE; do
 
         samtools stats --reference references/zfy_caribou.fasta \
                 -@ 3 \
-                sexID_$1/alignments/${SAMPLE}_sexID.bam | \
+                $1_sexID/alignments/${SAMPLE}_sexID.bam | \
                 grep -E '^RL' | \
                 cut -f 2,3 > \
-                sexID_$1/read_lengths_temp.txt
+                $1_sexID/read_lengths_temp.txt
 
 
-		total_depth=$(cut -f 2 sexID_$1/read_lengths_temp.txt | awk '{sum += $1 } END { print sum }')
+		total_depth=$(cut -f 2 $1_sexID/read_lengths_temp.txt | awk '{sum += $1 } END { print sum }')
 
-                X_depth=$(grep '204' sexID_$1/read_lengths_temp.txt | \
+                X_depth=$(grep '204' $1_sexID/read_lengths_temp.txt | \
                         cut -f 2)
 
-                Y_depth=$(grep '185' sexID_$1/read_lengths_temp.txt | \
+                Y_depth=$(grep '185' $1_sexID/read_lengths_temp.txt | \
                         cut -f 2)
 
 
                 if [[ -z "$X_depth" || $total_depth -lt 20  ]]
                 then
 
-                        echo "${SAMPLE},$X_depth,$Y_depth,-99" >> sexID_$1/sexID_results_$1.csv
+                        echo "${SAMPLE},$X_depth,$Y_depth,-99" >> $1_sexID/sexID_results_$1.csv
 
                 elif [[ $(( $X_depth / 10 )) -gt $Y_depth || -z "$Y_depth" ]]
                 then
 
-                        echo "${SAMPLE},$X_depth,$Y_depth,F" >> sexID_$1/sexID_results_$1.csv
+                        echo "${SAMPLE},$X_depth,$Y_depth,F" >> $1_sexID/sexID_results_$1.csv
 
                 else
 
-                        echo "${SAMPLE},$X_depth,$Y_depth,M" >> sexID_$1/sexID_results_$1.csv
+                        echo "${SAMPLE},$X_depth,$Y_depth,M" >> $1_sexID/sexID_results_$1.csv
 
                 fi
 
-done < sexID_$1/sample_list.txt
+done < $1_sexID/sample_list.txt
 
 
-rm sexID_$1/read_lengths_temp.txt
-rm -r sexID_$1/alignments/dropped/
+rm $1_sexID/read_lengths_temp.txt
+rm -r $1_sexID/alignments/dropped/
 
 
-mv sexID.log sexID_$1/
-mv sexID.err sexID_$1/
+mv sexID.log $1_sexID/
+mv sexID.err $1_sexID/

@@ -25,9 +25,9 @@ module load bowtie2
 module load samtools
 
 
-rm -fr alignments_$1/
-mkdir alignments_$1/
-mkdir alignments_$1/dropped/
+rm -fr $1_genome_align/
+mkdir $1_genome_align/
+mkdir $1_genome_align/dropped/
 
 
 echo "########################################################"
@@ -42,7 +42,7 @@ echo "########################################################" >> genome_align.
 ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
         sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
-        > alignments_$1/sample_list.txt
+        > $1_genome_align/sample_list.txt
 
 
 while IFS= read -r SAMPLE; do
@@ -52,24 +52,24 @@ while IFS= read -r SAMPLE; do
 
 	bowtie2 --end-to-end \
 		-x /home/bcrosby/projects/def-pawilson/reference_genome/Dovetail_hirise_May2021_final_assembly \
-		-1 ./trim_$1/${SAMPLE}_R1_trim.fastq.gz \
-		-2 ./trim_$1/${SAMPLE}_R2_trim.fastq.gz \
-		-S ./alignments_$1/${SAMPLE}.sam \
+		-1 ./$1_trim/${SAMPLE}_R1_trim.fastq.gz \
+		-2 ./$1_trim/${SAMPLE}_R2_trim.fastq.gz \
+		-S ./$1_genome_align/${SAMPLE}.sam \
 		--phred33 \
-		--un-conc-gz ./alignments_$1/dropped/${SAMPLE}_dropped.sam \
+		--un-conc-gz ./$1_genome_align/dropped/${SAMPLE}_dropped.sam \
 		--rg-id KBP3B.1 \
 		--rg SM:${SAMPLE} \
 		--rg LB:${SAMPLE}-1 \
 		--threads 4
 
-	samtools view -bS -q 30 -@ 3 ./alignments_$1/${SAMPLE}.sam | \
-		samtools sort - -@ 4 -o ./alignments_$1/${SAMPLE}.bam
+	samtools view -bS -q 30 -@ 3 ./$1_genome_align/${SAMPLE}.sam | \
+		samtools sort - -@ 4 -o ./$1_genome_align/${SAMPLE}.bam
 
 	echo "# Genome alignment for ${SAMPLE} complete #"
 	echo "# Genome alignment for ${SAMPLE} complete #" >> genome_align.err
 
-done < alignments_$1/sample_list.txt
+done < $1_genome_align/sample_list.txt
 
 
-mv genome_align.log alignments_$1/
-mv genome_align.err alignments_$1/
+mv genome_align.log $1_genome_align/
+mv genome_align.err $1_genome_align/

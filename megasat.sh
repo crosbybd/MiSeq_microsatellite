@@ -4,7 +4,7 @@
 #SBATCH --mail-user=bcrosby@trentu.ca
 #SBATCH -c 4
 #SBATCH --mem=32G
-#SBATCH --time=0-1:0:0
+#SBATCH --time=0-2:0:0
 #SBATCH -o megasat.log
 #SBATCH -e megasat.err
 
@@ -18,11 +18,11 @@
 module load perl
 
 
-rm -fr ./merged_$1/
-mkdir ./merged_$1/
+rm -fr ./$1_merged/
+mkdir ./$1_merged/
 
-rm -fr ./megasat_$1/
-mkdir ./megasat_$1/
+rm -fr ./$1_megasat/
+mkdir ./$1_megasat/
 
 
 echo "#############################################################"
@@ -37,7 +37,7 @@ echo "#############################################################" >> megasat.
 ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
         sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
-        > megasat_$1/sample_list.txt
+        > $1_megasat/sample_list.txt
 
 
 while IFS= read -r SAMPLE; do
@@ -48,9 +48,9 @@ while IFS= read -r SAMPLE; do
         echo "# Merging sample ${SAMPLE} #" >> megasat.err &
 
 	/home/bcrosby/projects/def-pawilson/software/usearch11.0.667_i86linux32 \
-		-fastq_mergepairs ./trim_$1/${SAMPLE}_R1_trim.fastq -fastqout ./merged_$1/${SAMPLE}_merged.fastq &
+		-fastq_mergepairs ./$1_trim/${SAMPLE}_R1_trim.fastq -fastqout ./$1_merged/${SAMPLE}_merged.fastq &
 
-done < megasat_$1/sample_list.txt
+done < $1_megasat/sample_list.txt
 
 
 perl /home/bcrosby/projects/def-pawilson/software/MEGASAT-master/'MEGASAT_1.0 for Linux'/MEGASAT_Genotype.pl \
@@ -58,9 +58,9 @@ perl /home/bcrosby/projects/def-pawilson/software/MEGASAT-master/'MEGASAT_1.0 fo
 	4 \
 	50 \
 	4 \
-	./merged_$1/ \
-	./megasat_$1/
+	./$1_merged/ \
+	./$1_megasat/
 
 
-mv megasat.log megasat_$1/
-mv megasat.err megasat_$1/
+mv megasat.log $1_megasat/
+mv megasat.err $1_megasat/
