@@ -16,9 +16,10 @@
 
 
 
-rm -fr /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/
-mkdir /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/
-mkdir /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/
+rm -fr /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/
+mkdir /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/
+mkdir /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/
+
 
 rm -fr $1_bs_download/
 mkdir $1_bs_download/
@@ -38,24 +39,27 @@ echo "########################################################" >> bs_download.e
 /home/bcrosby/projects/def-pawilson/software/bs download project \
 	-n $1 \
 	-q \
-	-o /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/
+	-o /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/
 
-mv /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*/*.fastq.gz \
-	/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/
 
-rm -fr /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*ds*/
+mv /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*/*.fastq.gz \
+	/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/
+
+
+rm -fr /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*ds*/
 
 
 /home/bcrosby/projects/def-pawilson/software/bs download run \
 	-n $1 \
 	-q \
-	-o /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/ \
+	-o /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/ \
 	--extension="csv"
 
+
 /home/bcrosby/projects/def-pawilson/software/bs download run \
 	-n $1 \
 	-q \
-	-o /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/ \
+	-o /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/ \
 	--exclude="*" \
 	--include="RunInfo.xml"
 

@@ -39,9 +39,12 @@ echo "# Aligning data for run: $1 " >> genome_align.err
 echo "########################################################" >> genome_align.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+rgID=$(grep '<Flowcell>' ~/projects/def-pawilson/caribou_MiSeq_project/$1/RunInfo.xml | sed -r "s:.*(\w{5})</Flowcell>:\1\.1:" | dos2unix)
+
+
+ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/.*/fastq/::" \
         > $1_genome_align/sample_list.txt
 
 
@@ -57,7 +60,7 @@ while IFS= read -r SAMPLE; do
 		-S ./$1_genome_align/${SAMPLE}.sam \
 		--phred33 \
 		--un-conc-gz ./$1_genome_align/dropped/${SAMPLE}_dropped.sam \
-		--rg-id KBP3B.1 \
+		--rg-id $rgID \
 		--rg SM:${SAMPLE} \
 		--rg LB:${SAMPLE}-1 \
 		--threads 4

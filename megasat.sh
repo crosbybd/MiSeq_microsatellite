@@ -34,9 +34,9 @@ echo "# Running MEGASAT_Genotype.pl on run: $1 " >> megasat.err
 echo "#############################################################" >> megasat.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/.*/fastq/::" \
         > $1_megasat/sample_list.txt
 
 
@@ -60,6 +60,9 @@ perl /home/bcrosby/projects/def-pawilson/software/MEGASAT-master/'MEGASAT_1.0 fo
 	4 \
 	./$1_merged/ \
 	./$1_megasat/
+
+
+cp $1_megasat/Output_/Genotype.txt $1_megasat/Output_/$1_megasat_genotype.txt
 
 
 mv megasat.log $1_megasat/

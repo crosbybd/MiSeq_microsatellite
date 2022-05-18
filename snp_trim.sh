@@ -34,9 +34,9 @@ echo "# Trimming data for run: $1 " >> snp_trim.err
 echo "########################################################" >> snp_trim.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
 	sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/.*/fastq/::" \
 	> $1_snp_trim/sample_list.txt
 
 
@@ -47,8 +47,8 @@ while IFS= read -r SAMPLE; do
 
 	java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE \
 		-threads 4 \
-		/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/${SAMPLE}_S[0-9]*_L001_R1_001.fastq.gz \
-		/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/${SAMPLE}_S[0-9]*_L001_R2_001.fastq.gz \
+		/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/${SAMPLE}_S[0-9]*_L001_R1_001.fastq.gz \
+		/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/${SAMPLE}_S[0-9]*_L001_R2_001.fastq.gz \
 		./$1_snp_trim/${SAMPLE}_R1_snp_trim.fastq.gz \
 		./$1_snp_trim/unpaired/${SAMPLE}_R1_unpaired.fastq.gz \
 		./$1_snp_trim/${SAMPLE}_R2_snp_trim.fastq.gz \

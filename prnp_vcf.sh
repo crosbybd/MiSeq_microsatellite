@@ -22,9 +22,9 @@ echo "-R references/prnp_exon3.fa" > $1_prnp_vcf/CombineGVCFs_args.txt
 echo "-O $1_prnp_vcf/combined.g.vcf.gz" >> $1_prnp_vcf/CombineGVCFs_args.txt
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/.*/fastq/::" \
         > $1_prnp_vcf/sample_list.txt
 
 

@@ -40,9 +40,9 @@ echo "# Generating PRNP genotypes for run: $1 " >> prnp_align.err
 echo "########################################################" >> prnp_align.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/.*/fastq/::" \
         > $1_prnp_align/sample_list.txt
 
 

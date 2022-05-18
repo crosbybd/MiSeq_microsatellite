@@ -30,19 +30,7 @@ mkdir $1_drb_align/
 mkdir $1_drb_align/dropped/
 
 
-
-echo "--end-to-end" > $1_drb_align/bowtie_args.txt
-echo "-x references/drb_caribou_laval_1" >> $1_drb_align/bowtie_args.txt
-echo "-1 ./snp_trim_$1/${SAMPLE}_R1_trim.fastq.gz" >> $1_drb_align/bowtie_args.txt
-echo "-2 ./snp_trim_$1/${SAMPLE}_R2_trim.fastq.gz" >> $1_drb_align/bowtie_args.txt
-echo "-S ./$1_drb_align/${SAMPLE}_drb.sam" >> $1_drb_align/bowtie_args.txt
-echo "--phred33" >> $1_drb_align/bowtie_args.txt
-echo "--un-conc-gz ./$1_drb_align/dropped/${SAMPLE}_drb_dropped.sam" >> $1_drb_align/bowtie_args.txt
-grep '<Flowcell>' ~/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/RunInfo.xml | sed -r "s:.*(\w{5})</Flowcell>:--rgID \1\.1:" >> $1_drb_align/bowtie_args.txt
-echo "--rg SM:${SAMPLE}" >> $1_drb_align/bowtie_args.txt
-echo "--rg LB:${SAMPLE}-1" >> $1_drb_align/bowtie_args.txt
-echo "--threads 4" >> $1_drb_align/bowtie_args.txt
-
+read_group=$(grep '<Flowcell>' ~/projects/def-pawilson/caribou_MiSeq_project/$1/RunInfo.xml | sed -r "s:.*(\w{5})</Flowcell>:--rgID \1\.1:")
 
 
 echo "########################################################"
@@ -54,9 +42,9 @@ echo "# Generating DRB alignments for run: $1 " >> drb_align.err
 echo "########################################################" >> drb_align.err
 
 
-ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
+ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
         sed -r "s:_S[0-9]+_L001_R1_001.fastq.gz::" | \
-        sed -r "s:/home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/.*/fastq/::" \
+        sed -r "s:/home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/.*/fastq/::" \
         > $1_drb_align/sample_list.txt
 
 
@@ -67,7 +55,19 @@ while IFS= read -r SAMPLE; do
         echo "Aligning sample ${SAMPLE}" >> drb_align.err
 
 
-	bowtie2 "$(< $1_drb_align/bowtie_args.txt)"
+#	bowtie2 "$(< $1_drb_align/bowtie_args.txt)"
+
+	bowtie2 --end-to-end \
+		-x references/drb_caribou_laval_1 \
+		-1 ./$1_snp_trim/${SAMPLE}_R1_snp_trim.fastq.gz \
+		-2 ./$1_snp_trim/${SAMPLE}_R2_snp_trim.fastq.gz \
+		-S ./$1_drb_align/${SAMPLE}_drb.sam \
+		--phred33 \
+		--un-conc-gz ./$1_drb_align/dropped/${SAMPLE}_drb_dropped.sam \
+		--rg-id ${read_group} \
+		--rg SM:${SAMPLE} \
+		--rg LB:${SAMPLE}-1 \
+		--threads 4
 
 
 #	head ./$1_drb_align/${SAMPLE}_drb_temp.sam -n 4 > \
