@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-2:0:0
-#SBATCH -o trim.log
-#SBATCH -e trim.err
+#SBATCH -o trim_%A.log
+#SBATCH -e trim_%A.err
 
 
 #
@@ -32,9 +32,9 @@ echo "########################################################"
 echo "# Trimming data for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> trim.err
-echo "# Trimming data for run: $1 " >> trim.err
-echo "########################################################" >> trim.err
+echo "########################################################" >> trim_$SLURM_JOB_ID.err
+echo "# Trimming data for run: $1 " >> trim_$SLURM_JOB_ID.err
+echo "########################################################" >> trim_$SLURM_JOB_ID.err
 
 
 ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
@@ -46,7 +46,7 @@ ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | 
 while IFS= read -r SAMPLE; do
 
 	echo "# Trimming sample ${SAMPLE} #"
-	echo "# Trimming sample ${SAMPLE} #" >> trim.err
+	echo "# Trimming sample ${SAMPLE} #" >> trim_$SLURM_JOB_ID.err
 
 	java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE \
 		-threads 4 \
@@ -69,10 +69,18 @@ while IFS= read -r SAMPLE; do
 
 
 	echo "# Trimming for ${SAMPLE} complete #"
-	echo "# Trimming for ${SAMPLE} complete #" >> trim.err
+	echo "# Trimming for ${SAMPLE} complete #" >> trim_$SLURM_JOB_ID.err
 
 done < $1_trim/sample_list.txt
 
 
-mv trim.log $1_trim/
-mv trim.err $1_trim/
+source ENV_multiqc/bin/activate
+
+
+multiqc ./$1_fastqc/ \
+	-o ./$1_fastqc/$1_multiqc_report.html \
+	-f
+
+
+mv trim_$SLURM_JOB_ID.log $1_trim/
+mv trim_$SLURM_JOB_ID.err $1_trim/

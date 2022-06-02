@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-1:00:0
-#SBATCH -o prnp_align.log
-#SBATCH -e prnp_align.err
+#SBATCH -o prnp_align_%A.log
+#SBATCH -e prnp_align_%A.err
 
 
 #
@@ -27,7 +27,6 @@ module load samtools
 
 rm -fr $1_prnp_align/
 mkdir $1_prnp_align/
-mkdir $1_prnp_align/
 mkdir $1_prnp_align/dropped/
 
 
@@ -35,9 +34,9 @@ echo "########################################################"
 echo "# Generating PRNP genotypes for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> prnp_align.err
-echo "# Generating PRNP genotypes for run: $1 " >> prnp_align.err
-echo "########################################################" >> prnp_align.err
+echo "########################################################" >> prnp_align_$SLURM_JOB_ID.err
+echo "# Generating PRNP genotypes for run: $1 " >> prnp_align_$SLURM_JOB_ID.err
+echo "########################################################" >> prnp_align_$SLURM_JOB_ID.err
 
 
 ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
@@ -50,7 +49,7 @@ while IFS= read -r SAMPLE; do
 
 
         echo "Aligning sample ${SAMPLE}"
-        echo "Aligning sample ${SAMPLE}" >> prnp_align.err
+        echo "Aligning sample ${SAMPLE}" >> prnp_align_$SLURM_JOB_ID.err
 
 
         bowtie2 --end-to-end \
@@ -71,19 +70,15 @@ while IFS= read -r SAMPLE; do
 
 
 	echo "Alignment for sample ${SAMPLE} complete"
-	echo "Alignment for sample ${SAMPLE} complete" >> prnp_align.err
+	echo "Alignment for sample ${SAMPLE} complete" >> prnp_align_$SLURM_JOB_ID.err
 
 
 
 done < $1_prnp_align/sample_list.txt
 
 
-rm $1_prnp_align/read_lengths_temp.txt
 rm -r $1_prnp_align/dropped/
 
 
-mv prnp_align.log $1_prnp_align/
-mv prnp_align.err $1_prnp_align/
-
-
-rm -r $1_prnp_align/dropped/
+mv prnp_align_$SLURM_JOB_ID.log $1_prnp_align/
+mv prnp_align_$SLURM_JOB_ID.err $1_prnp_align/

@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-1:00:0
-#SBATCH -o sexID.log
-#SBATCH -e sexID.err
+#SBATCH -o sexID_%A.log
+#SBATCH -e sexID_%A.err
 
 
 #
@@ -35,9 +35,9 @@ echo "########################################################"
 echo "# Generating sexID table for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> sexID.err
-echo "# Generating sexID table for run: $1 " >> sexID.err
-echo "########################################################" >> sexID.err
+echo "########################################################" >> sexID_$SLURM_JOB_ID.err
+echo "# Generating sexID table for run: $1 " >> sexID_$SLURM_JOB_ID.err
+echo "########################################################" >> sexID_$SLURM_JOB_ID.err
 
 
 ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
@@ -53,7 +53,7 @@ while IFS= read -r SAMPLE; do
 
 
         echo "Aligning sample ${SAMPLE}"
-        echo "Aligning sample ${SAMPLE}" >> sexID.err
+        echo "Aligning sample ${SAMPLE}" >> sexID_$SLURM_JOB_ID.err
 
 
         bowtie2 --local \
@@ -72,11 +72,11 @@ while IFS= read -r SAMPLE; do
 
 
 	echo "Alignment for sample ${SAMPLE} complete"
-	echo "Alignment for sample ${SAMPLE} complete" >> sexID.err
+	echo "Alignment for sample ${SAMPLE} complete" >> sexID_$SLURM_JOB_ID.err
 
 
         echo "Genotyping sample ${SAMPLE}"
-        echo "Genotyping sample ${SAMPLE}" >> sexID.err
+        echo "Genotyping sample ${SAMPLE}" >> sexID_$SLURM_JOB_ID.err
 
 
         samtools stats --reference references/zfy_caribou.fasta \
@@ -119,5 +119,5 @@ rm $1_sexID/read_lengths_temp.txt
 rm -r $1_sexID/alignments/dropped/
 
 
-mv sexID.log $1_sexID/
-mv sexID.err $1_sexID/
+mv sexID_$SLURM_JOB_ID.log $1_sexID/
+mv sexID_$SLURM_JOB_ID.err $1_sexID/

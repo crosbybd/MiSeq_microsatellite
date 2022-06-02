@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=32G
 #SBATCH --time=0-2:0:0
-#SBATCH -o megasat.log
-#SBATCH -e megasat.err
+#SBATCH -o megasat_%A.log
+#SBATCH -e megasat_%A.err
 
 
 #
@@ -29,9 +29,9 @@ echo "#############################################################"
 echo "# Running MEGASAT_Genotype.pl on run: $1 "
 echo "#############################################################"
 
-echo "#############################################################" >> megasat.err
-echo "# Running MEGASAT_Genotype.pl on run: $1 " >> megasat.err
-echo "#############################################################" >> megasat.err
+echo "#############################################################" >> megasat_$SLURM_JOB_ID.err
+echo "# Running MEGASAT_Genotype.pl on run: $1 " >> megasat_$SLURM_JOB_ID.err
+echo "#############################################################" >> megasat_$SLURM_JOB_ID.err
 
 
 ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
@@ -45,7 +45,7 @@ while IFS= read -r SAMPLE; do
         ((i=i%4)); ((i++==0)) && wait
 
         echo "# Merging sample ${SAMPLE} #" &
-        echo "# Merging sample ${SAMPLE} #" >> megasat.err &
+        echo "# Merging sample ${SAMPLE} #" >> megasat_$SLURM_JOB_ID.err &
 
 	/home/bcrosby/projects/def-pawilson/software/usearch11.0.667_i86linux32 \
 		-fastq_mergepairs ./$1_trim/${SAMPLE}_R1_trim.fastq -fastqout ./$1_merged/${SAMPLE}_merged.fastq &
@@ -54,7 +54,7 @@ done < $1_megasat/sample_list.txt
 
 
 perl /home/bcrosby/projects/def-pawilson/software/MEGASAT-master/'MEGASAT_1.0 for Linux'/MEGASAT_Genotype.pl \
-	./primerfile_1.2.txt \
+	./primerfile_1.3.txt \
 	4 \
 	50 \
 	4 \
@@ -65,5 +65,5 @@ perl /home/bcrosby/projects/def-pawilson/software/MEGASAT-master/'MEGASAT_1.0 fo
 cp $1_megasat/Output_/Genotype.txt $1_megasat/Output_/$1_megasat_genotype.txt
 
 
-mv megasat.log $1_megasat/
-mv megasat.err $1_megasat/
+mv megasat_$SLURM_JOB_ID.log $1_megasat/
+mv megasat_$SLURM_JOB_ID.err $1_megasat/

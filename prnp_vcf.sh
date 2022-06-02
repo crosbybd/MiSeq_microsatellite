@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-1:00:0
-#SBATCH -o prnp_vcf.log
-#SBATCH -e prnp_vcf.err
+#SBATCH -o prnp_vcf_%A.log
+#SBATCH -e prnp_vcf_%A.err
 
 
 module load samtools
@@ -31,15 +31,15 @@ ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | 
 while IFS= read -r SAMPLE; do
 
 	echo "Creating GVCF for sample ${SAMPLE}"
-	echo "Creating GVCF for sample ${SAMPLE}" >> prnp_vcf.err
+	echo "Creating GVCF for sample ${SAMPLE}" >> prnp_vcf_$SLURM_JOB_ID.err
 
 
-	samtools index -b -@ 3 prnp_align_$1/${SAMPLE}_prnp.bam
+	samtools index -b -@ 3 $1_prnp_align/${SAMPLE}_prnp.bam
 
 	gatk --java-options "-Xmx16g -XX:ParallelGCThreads=4" \
 		HaplotypeCaller \
 		-R ./references/prnp_exon3.fa \
-		-I prnp_align_$1/${SAMPLE}_prnp.bam \
+		-I $1_prnp_align/${SAMPLE}_prnp.bam \
 		-O $1_prnp_vcf/${SAMPLE}.g.vcf.gz \
 		-ERC GVCF
 
@@ -58,10 +58,10 @@ gatk --java-options "-Xmx16g -XX:ParallelGCThreads=4" \
 gatk --java-options "-Xmx16g -XX:ParallelGCThreads=4" \
 	GenotypeGVCFs \
 	-R ./references/prnp_exon3.fa \
-	-V $1_prnp_vcf/combined.g.vcf.gz \
-	-O $1_prnp_vcf/genotyped.g.vcf.gz
+	-V $1_prnp_vcf/$1_combined.g.vcf.gz \
+	-O $1_prnp_vcf/$1_genotyped.g.vcf.gz
 
 
-mv prnp_vcf.log $1_prnp_vcf/
-mv prnp_vcf.err $1_prnp_vcf/
+mv prnp_vcf_$SLURM_JOB_ID.log $1_prnp_vcf/
+mv prnp_vcf_$SLURM_JOB_ID.err $1_prnp_vcf/
 

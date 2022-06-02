@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-1:00:0
-#SBATCH -o drb2_align.log
-#SBATCH -e drb2_align.err
+#SBATCH -o drb2_align_%A.log
+#SBATCH -e drb2_align_%A.err
 
 
 #
@@ -35,9 +35,9 @@ echo "########################################################"
 echo "# Generating DRB alignments for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> drb2_align.err
-echo "# Generating DRB alignments for run: $1 " >> drb2_align.err
-echo "########################################################" >> drb2_align.err
+echo "########################################################" >> drb2_align_$SLURM_JOB_ID.err
+echo "# Generating DRB alignments for run: $1 " >> drb2_align_$SLURM_JOB_ID.err
+echo "########################################################" >> drb2_align_$SLURM_JOB_ID.err
 
 
 ls /home/bcrosby/projects/def-pawilson/MiSeq_microsatellite/caribou/$1/fastq/*R1*.gz | \
@@ -50,7 +50,7 @@ while IFS= read -r SAMPLE; do
 
 
         echo "Aligning sample ${SAMPLE}"
-        echo "Aligning sample ${SAMPLE}" >> drb2_align.err
+        echo "Aligning sample ${SAMPLE}" >> drb2_align_$SLURM_JOB_ID.err
 
 
         bowtie2 --end-to-end \
@@ -71,7 +71,7 @@ while IFS= read -r SAMPLE; do
 
 
 	echo "Alignment for sample ${SAMPLE} complete"
-	echo "Alignment for sample ${SAMPLE} complete" >> drb2_align.err
+	echo "Alignment for sample ${SAMPLE} complete" >> drb2_align_$SLURM_JOB_ID.err
 
 
 
@@ -82,8 +82,8 @@ rm drb2_align_$1/read_lengths_temp.txt
 rm -r drb2_align_$1/dropped/
 
 
-mv drb2_align.log drb2_align_$1/
-mv drb2_align.err drb2_align_$1/
+mv drb2_align_$SLURM_JOB_ID.log drb2_align_$1/
+mv drb2_align_$SLURM_JOB_ID.err drb2_align_$1/
 
 
 rm -r drb2_align_$1/dropped/

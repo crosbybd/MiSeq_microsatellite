@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-1:00:0
-#SBATCH -o drb_vcf.log
-#SBATCH -e drb_vcf.err
+#SBATCH -o drb_vcf_%A.log
+#SBATCH -e drb_vcf_%A.err
 
 
 module load samtools
@@ -31,7 +31,7 @@ ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | 
 while IFS= read -r SAMPLE; do
 
 	echo "Creating GVCF for sample ${SAMPLE}"
-	echo "Creating GVCF for sample ${SAMPLE}" >> drb_vcf.err
+	echo "Creating GVCF for sample ${SAMPLE}" >> drb_vcf_$SLURM_JOB_ID.err
 
 
 	samtools index -b -@ 3 drb_align_$1/${SAMPLE}_drb.bam
@@ -62,6 +62,6 @@ gatk --java-options "-Xmx16g -XX:ParallelGCThreads=4" \
 	-O $1_drb_vcf/genotyped.g.vcf.gz
 
 
-mv drb_vcf.log $1_drb_vcf/
-mv drb_vcf.err $1_drb_vcf/
+mv drb_vcf_$SLURM_JOB_ID.log $1_drb_vcf/
+mv drb_vcf_$SLURM_JOB_ID.err $1_drb_vcf/
 

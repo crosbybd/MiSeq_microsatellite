@@ -5,8 +5,8 @@
 #SBATCH -c 2
 #SBATCH --mem=4G
 #SBATCH --time=0-1:0:0
-#SBATCH -o bs_download.log
-#SBATCH -e bs_download.err
+#SBATCH -o bs_download_%A.log
+#SBATCH -e bs_download_%A.err
 
 
 #
@@ -30,9 +30,9 @@ echo "########################################################"
 echo "# Downloading data from BaseSpace for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> bs_download.err
-echo "# Downloading data from BaseSpace for run: $1 "  >> bs_download.err
-echo "########################################################" >> bs_download.err
+echo "########################################################" >> bs_download_$SLURM_JOB_ID.err
+echo "# Downloading data from BaseSpace for run: $1 "  >> bs_download_$SLURM_JOB_ID.err
+echo "########################################################" >> bs_download_$SLURM_JOB_ID.err
 
 
 
@@ -68,11 +68,11 @@ echo "########################################################"
 echo "# BaseSpace download complete for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> bs_download.err
-echo "# BaseSpace download complete for run: $1 " >> bs_download.err
-echo "########################################################" >> bs_download.err
+echo "########################################################" >> bs_download_$SLURM_JOB_ID.err
+echo "# BaseSpace download complete for run: $1 " >> bs_download_$SLURM_JOB_ID.err
+echo "########################################################" >> bs_download_$SLURM_JOB_ID.err
 
 
-mv bs_download.log $1_bs_download/
-mv bs_download.err $1_bs_download/
+mv bs_download_$SLURM_JOB_ID.log $1_bs_download/
+mv bs_download_$SLURM_JOB_ID.err $1_bs_download/
 

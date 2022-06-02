@@ -5,8 +5,8 @@
 #SBATCH -c 4
 #SBATCH --mem=8G
 #SBATCH --time=0-2:0:0
-#SBATCH -o snp_trim.log
-#SBATCH -e snp_trim.err
+#SBATCH -o snp_trim_%A.log
+#SBATCH -e snp_trim_%A.err
 
 
 #
@@ -29,9 +29,9 @@ echo "########################################################"
 echo "# Trimming data for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> snp_trim.err
-echo "# Trimming data for run: $1 " >> snp_trim.err
-echo "########################################################" >> snp_trim.err
+echo "########################################################" >> snp_trim_$SLURM_JOB_ID.err
+echo "# Trimming data for run: $1 " >> snp_trim_$SLURM_JOB_ID.err
+echo "########################################################" >> snp_trim_$SLURM_JOB_ID.err
 
 
 ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | \
@@ -43,7 +43,7 @@ ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | 
 while IFS= read -r SAMPLE; do
 
 	echo "# Trimming sample ${SAMPLE} #"
-	echo "# Trimming sample ${SAMPLE} #" >> snp_trim.err
+	echo "# Trimming sample ${SAMPLE} #" >> snp_trim_$SLURM_JOB_ID.err
 
 	java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE \
 		-threads 4 \
@@ -58,11 +58,11 @@ while IFS= read -r SAMPLE; do
 
 
 	echo "# Trimming for ${SAMPLE} complete #"
-	echo "# Trimming for ${SAMPLE} complete #" >> snp_trim.err
+	echo "# Trimming for ${SAMPLE} complete #" >> snp_trim_$SLURM_JOB_ID.err
 
 done < $1_snp_trim/sample_list.txt
 
 
-mv snp_trim.log $1_snp_trim/
-mv snp_trim.err $1_snp_trim/
+mv snp_trim_$SLURM_JOB_ID.log $1_snp_trim/
+mv snp_trim_$SLURM_JOB_ID.err $1_snp_trim/
 

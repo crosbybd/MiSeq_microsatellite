@@ -4,9 +4,9 @@
 #SBATCH --mail-user=bcrosby@trentu.ca
 #SBATCH -c 4
 #SBATCH --mem=32G
-#SBATCH --time=0-2:0:0
-#SBATCH -o genome_align.log
-#SBATCH -e genome_align.err
+#SBATCH --time=0-5:0:0
+#SBATCH -o genome_align_%A.log
+#SBATCH -e genome_align_%A.err
 
 
 #
@@ -34,9 +34,9 @@ echo "########################################################"
 echo "# Aligning data for run: $1 "
 echo "########################################################"
 
-echo "########################################################" >> genome_align.err
-echo "# Aligning data for run: $1 " >> genome_align.err
-echo "########################################################" >> genome_align.err
+echo "########################################################" >> genome_align_$SLURM_JOB_ID.err
+echo "# Aligning data for run: $1 " >> genome_align_$SLURM_JOB_ID.err
+echo "########################################################" >> genome_align_$SLURM_JOB_ID.err
 
 
 rgID=$(grep '<Flowcell>' ~/projects/def-pawilson/caribou_MiSeq_project/$1/RunInfo.xml | sed -r "s:.*(\w{5})</Flowcell>:\1\.1:" | dos2unix)
@@ -51,7 +51,7 @@ ls /home/bcrosby/projects/def-pawilson/caribou_MiSeq_project/$1/fastq/*R1*.gz | 
 while IFS= read -r SAMPLE; do
 
 	echo "# Aligning sample ${SAMPLE} to reference genome #"
-	echo "# Aligning sample ${SAMPLE} to reference genome #" >> genome_align.err
+	echo "# Aligning sample ${SAMPLE} to reference genome #" >> genome_align_$SLURM_JOB_ID.err
 
 	bowtie2 --end-to-end \
 		-x /home/bcrosby/projects/def-pawilson/reference_genome/Dovetail_hirise_May2021_final_assembly \
@@ -69,10 +69,11 @@ while IFS= read -r SAMPLE; do
 		samtools sort - -@ 4 -o ./$1_genome_align/${SAMPLE}.bam
 
 	echo "# Genome alignment for ${SAMPLE} complete #"
-	echo "# Genome alignment for ${SAMPLE} complete #" >> genome_align.err
+	echo "# Genome alignment for ${SAMPLE} complete #" >> genome_align_$SLURM_JOB_ID.err
 
 done < $1_genome_align/sample_list.txt
 
 
-mv genome_align.log $1_genome_align/
-mv genome_align.err $1_genome_align/
+mv genome_align_$SLURM_JOB_ID.log $1_genome_align/
+mv genome_align_$SLURM_JOB_ID.err $1_genome_align/
+
