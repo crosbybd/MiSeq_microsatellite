@@ -91,9 +91,9 @@ Insert text here
 
 
 
-[^1]
-[^2]
-[^3]
-[^4]
-[^5]
-[^6]: Zhan, L., Paterson, I. G., Fraser, B. A., Watson, B., Bradbury, I. R., Nadukkalam Ravindran, P., … Bentzen, P. (2017). MEGASAT: Automated Inference of Microsatellite Genotypes From Sequence Data. Molecular Ecology Resources, 17(2), 247–256. [https://doi.org/10.1111/1755-0998.12561](https://doi.org/10.1111/1755-0998.12561)
+[^1]: Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: A flexible trimmer for Illumina sequence data. Bioinformatics, 30(15), 2114–2120. [https://doi.org/10.1093/bioinformatics/btu170]
+[^2]: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+[^3]: Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: Summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047–3048. [https://doi.org/10.1093/bioinformatics/btw354]
+[^4]: Langmead, B., Trapnell, C., Pop, M., & Salzberg, S. L. (2009). Ultrafast and memory-efficient alignment of short DNA sequences to the human genome. Genome Biology, 10(3). [https://doi.org/10.1186/gb-2009-10-3-r25]
+[^5]: Danecek, P., Bonfield, J. K., Liddle, J., Marshall, J., Ohan, V., Pollard, M. O., … Li, H. (2021). Twelve years of SAMtools and BCFtools. GigaScience, 10(2), 1–4. [https://doi.org/10.1093/gigascience/giab008]
+[^6]: Zhan, L., Paterson, I. G., Fraser, B. A., Watson, B., Bradbury, I. R., Nadukkalam Ravindran, P., … Bentzen, P. (2017). MEGASAT: Automated Inference of Microsatellite Genotypes From Sequence Data. Molecular Ecology Resources, 17(2), 247–256. [https://doi.org/10.1111/1755-0998.12561]
