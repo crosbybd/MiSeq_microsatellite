@@ -96,4 +96,4 @@ Insert text here
 [^3]
 [^4]
 [^5]
-[^6]Zhan, L., Paterson, I. G., Fraser, B. A., Watson, B., Bradbury, I. R., Nadukkalam Ravindran, P., … Bentzen, P. (2017). MEGASAT: Automated Inference of Microsatellite Genotypes From Sequence Data. Molecular Ecology Resources, 17(2), 247–256. [https://doi.org/10.1111/1755-0998.12561](https://doi.org/10.1111/1755-0998.12561)
+[^6]: Zhan, L., Paterson, I. G., Fraser, B. A., Watson, B., Bradbury, I. R., Nadukkalam Ravindran, P., … Bentzen, P. (2017). MEGASAT: Automated Inference of Microsatellite Genotypes From Sequence Data. Molecular Ecology Resources, 17(2), 247–256. [https://doi.org/10.1111/1755-0998.12561](https://doi.org/10.1111/1755-0998.12561)
